@@ -2,7 +2,8 @@ const express = require('express');
 const app = express();
 const cors = require('cors');
 require('dotenv').config();
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+const { MongoClient, ServerApiVersion, } = require('mongodb');
+const ObjectId = require('mongodb').ObjectId;
 const port = process.env.PORT || 5000;
 
 //middleware
@@ -25,14 +26,22 @@ async function run() {
     //get read all inventory
     //http://localhost:5000/inventory
     app.get('/inventory', async (req, res) => {
-      const q = req.query;
-      console.log(q);
+      // const q = req.query;
+      // console.log(q);
 
       const cursor = wareHouseCollection.find({})
 
       const result = await cursor.toArray()
 
 
+      res.send(result)
+    })
+
+    //get on item details
+    app.get('/inventory/:id', async (req, res) => {
+      const id = req.params.id;
+      const query = { _id: ObjectId(id) };
+      const result = await wareHouseCollection.findOne(query);
       res.send(result)
     })
 
@@ -54,7 +63,7 @@ async function run() {
     app.put('/item/:id', async (req, res) => {
       const id = req.params.id;
       const data = req.body;
-      console.log('from update api', data)
+
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
       const updateDoc = {
@@ -71,7 +80,7 @@ async function run() {
 
     // delete
 
-    app.delete("/item/:id", async (req, res) => {
+    app.delete('/inventory/:id', async (req, res) => {
       const id = req.params.id;
       const filter = { _id: ObjectId(id) };
 
