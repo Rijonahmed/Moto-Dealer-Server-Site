@@ -27,9 +27,7 @@ async function run() {
     //get read all inventory
     //http://localhost:5000/inventory
     app.get('/inventory', async (req, res) => {
-      const query = req.query.email;
-
-
+      const query = req.query;
       const cursor = wareHouseCollection.find(query)
       const result = await cursor.toArray()
 
