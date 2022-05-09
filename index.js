@@ -3,6 +3,7 @@ const app = express();
 const cors = require('cors');
 require('dotenv').config();
 const { MongoClient, ServerApiVersion, } = require('mongodb');
+
 const ObjectId = require('mongodb').ObjectId;
 const port = process.env.PORT || 5000;
 
@@ -26,11 +27,10 @@ async function run() {
     //get read all inventory
     //http://localhost:5000/inventory
     app.get('/inventory', async (req, res) => {
-      // const q = req.query;
-      // console.log(q);
+      const query = req.query;
 
-      const cursor = wareHouseCollection.find({})
 
+      const cursor = wareHouseCollection.find(query)
       const result = await cursor.toArray()
 
 
@@ -60,19 +60,24 @@ async function run() {
 
     //update
 
-    app.put('/item/:id', async (req, res) => {
+    app.put('/inventory/:id', async (req, res) => {
       const id = req.params.id;
+
       const data = req.body;
+
 
       const filter = { _id: ObjectId(id) };
       const options = { upsert: true };
+
+
       const updateDoc = {
         $set: {
-          userName: data.userName, email: data.email,
+          quantity: data.quantity
         },
       };
 
       const result = await wareHouseCollection.updateOne(filter, updateDoc, options);
+
 
       res.send(result)
       // console.log('from put method', id)
